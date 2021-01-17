@@ -11,6 +11,11 @@ The plan for now should be as follows:
 1. Research local sportsbooks in michigan that have online interfaces
   -FanDuel is a good start, though not local
   -Betrivers
+  -William Hill
+  -FoxBet
+  -PointsBet
+  -BetMGM
+  -Yet others that are still to come online
   
 2. Write python code to scrape the sites. We can begin withe the big sportsbooks (FanDuel, DraftKings, etc.). I suggest we use selenium to ensure that all the javascript on the site executes and to look as less suspicious as possible to the books. It will also make filling out the textboxes easier.
 
