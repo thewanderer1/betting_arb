@@ -98,81 +98,82 @@ def checkForArbitrage():
                         print("Arbitrage found")
 
 
+def main():
+    profile = webdriver.FirefoxProfile()
 
-profile = webdriver.FirefoxProfile()
+    PROXY_HOST = "12.12.12.123"
+    PROXY_PORT = "1234"
+    profile.set_preference("network.proxy.type", 1)
+    profile.set_preference("network.proxy.http", PROXY_HOST)
+    profile.set_preference("network.proxy.http_port", int(PROXY_PORT))
+    profile.set_preference("dom.webdriver.enabled", False)
+    profile.set_preference('useAutomationExtension', False)
+    profile.update_preferences()
+    desired = DesiredCapabilities.FIREFOX
 
-PROXY_HOST = "12.12.12.123"
-PROXY_PORT = "1234"
-profile.set_preference("network.proxy.type", 1)
-profile.set_preference("network.proxy.http", PROXY_HOST)
-profile.set_preference("network.proxy.http_port", int(PROXY_PORT))
-profile.set_preference("dom.webdriver.enabled", False)
-profile.set_preference('useAutomationExtension', False)
-profile.update_preferences()
-desired = DesiredCapabilities.FIREFOX
+    #ua = UserAgent()
+    #userAgent = ua.random
+    options = Options()
+    #options.add_argument('-headless')
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36")
+    options.add_argument('--disable-blink-features=AutomationControlled')
+    #firefoxOptions = webdriver.FirefoxOptions()
+    #firefoxOptions.headless = True
 
-#ua = UserAgent()
-#userAgent = ua.random
-options = Options()
-#options.add_argument('-headless')
-options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36")
-options.add_argument('--disable-blink-features=AutomationControlled')
-#firefoxOptions = webdriver.FirefoxOptions()
-#firefoxOptions.headless = True
+    fanduel_driver = Chrome()
+    barstool_driver = Chrome()
+    twitter_driver = Chrome()
 
-fanduel_driver = Chrome()
-barstool_driver = Chrome()
-twitter_driver = Chrome()
+    try:
+        #driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {"source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"})
+        fanduel_driver.set_window_size(1280, 800)
 
-try:
-    #driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {"source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"})
-    fanduel_driver.set_window_size(1280, 800)
+        #barstool_driver.execute_script("Page.addScriptToEvaluateOnNewDocument", {"source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"})
+        barstool_driver.set_window_size(1280, 800)
+        
+        navigateToFanduel(fanduel_driver)
+        fanduelWindow= fanduel_driver.current_window_handle
 
-    #barstool_driver.execute_script("Page.addScriptToEvaluateOnNewDocument", {"source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"})
-    barstool_driver.set_window_size(1280, 800)
-    
-    navigateToFanduel(fanduel_driver)
-    fanduelWindow= fanduel_driver.current_window_handle
+      
+        """body = driver.find_element_by_tag_name("body")
+        body.send_keys(Keys.CONTROL + 't')
 
-  
-    """body = driver.find_element_by_tag_name("body")
-    body.send_keys(Keys.CONTROL + 't')
+        for window_handle in driver.window_handles:
+            if window_handle != fanduelWindow:
+                driver.switch_to.window(window_handle)
+                break"""
 
-    for window_handle in driver.window_handles:
-        if window_handle != fanduelWindow:
-            driver.switch_to.window(window_handle)
-            break"""
-
-    navigateToBarstool(barstool_driver)
-    time.sleep(5)
-    #barstoolWindow=driver.current_window_handle
-
-
-
-    while (True):
-        #switchToWindow(barstoolWindow)
-        getDataFromBarstool(barstool_driver)
-        #switchToWindow(fanduelWindow)
-        getDataFromFanduel(fanduel_driver)
-        checkForArbitrage()
-        print("\nBarstool:")
-        for p in barstool_teams:
-            print(p)
-        print("\nFanduel:")
-        for p in fanduel_teams:
-            print(p)
-
-    
-
-
-    
+        navigateToBarstool(barstool_driver)
+        time.sleep(5)
+        #barstoolWindow=driver.current_window_handle
 
 
 
+        while (True):
+            #switchToWindow(barstoolWindow)
+            getDataFromBarstool(barstool_driver)
+            #switchToWindow(fanduelWindow)
+            getDataFromFanduel(fanduel_driver)
+            checkForArbitrage()
+            print("\nBarstool:")
+            for p in barstool_teams:
+                print(p)
+            print("\nFanduel:")
+            for p in fanduel_teams:
+                print(p)
 
-finally:
-    driver.quit()
-    barstool_driver.quit()
+        
+
+
+        
 
 
 
+
+    finally:
+        driver.quit()
+        barstool_driver.quit()
+
+
+if __name__ == '__main__':
+    main()
