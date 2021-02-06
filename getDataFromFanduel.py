@@ -22,10 +22,8 @@ def navigateToFanduel(driver):
     ran = random.uniform(0.01,2)
     time.sleep(ran)
 
-    original_window = driver.current_window_handle
-
-    driver.find_element_by_xpath("//a[@href='/sports/navigation/830.1']").click()
-    #driver.get("https://sportsbook.fanduel.com/sports/navigation/830.1/10107.3")
+    #driver.find_element_by_xpath("//a[@href='/sports/navigation/830.1']").click()
+    driver.get("https://sportsbook.fanduel.com/sports/navigation/830.1/10107.3")
 
     ran = random.uniform(0.01,2)
     time.sleep(ran)
@@ -35,6 +33,7 @@ def navigateToBarstool(driver):
 
     ran = random.uniform(0.01,2)
     time.sleep(ran)
+
 
 def getDataFromFanduel(driver):
     fanduel_soup = BeautifulSoup(driver.page_source, 'lxml')
@@ -78,36 +77,26 @@ def getDataFromBarstool(driver):
 
         counter = counter + 1
 
-def switchToWindow(windowHandle):
-    driver.switch_to().window(windowHandle)
-
 def checkForArbitrage():
     for i in range(len(barstool_teams)//2): 
         for j in range(len(fanduel_teams)//2):
             if barstool_teams[2*i][len(barstool_teams[2*i]) - 4:] == fanduel_teams[2*j][len(fanduel_teams[2*j]) - 4:]: #check if the team names are the same
                 if(barstool_odds[2*i] > 0):
-                    if(fanduel_odds[2*j] < 0 and -fanduel_odds[2*j] < barstool_odds[2*i]):
-                        print("Arbitrage found")
                     if(fanduel_odds[2*j+1] < 0 and -fanduel_odds[2*j+1] < barstool_odds[2*i]):
                         print("Arbitrage found")
 
                 if(barstool_odds[2*i+1] > 0):
                     if(fanduel_odds[2*j] < 0 and -fanduel_odds[2*j] < barstool_odds[2*i+1]):
                         print("Arbitrage found")
-                    if(fanduel_odds[2*j+1] < 0 and -fanduel_odds[2*j+1] < barstool_odds[2*i+1]):
-                        print("Arbitrage found")
 
                 if(fanduel_odds[2*i] > 0):
-                    if(barstool_odds[2*i] < 0 and -barstool_odds[2*i] < fanduel_odds[2*j]):
-                        print("Arbitrage found")
                     if(barstool_odds[2*i+1] < 0 and -barstool_odds[2*i+1] < fanduel_odds[2*j]):
                         print("Arbitrage found")
 
-                if(barstool_odds[2*i+1] > 0):
+                if(fanduel_odds[2*i+1] > 0):
                     if(barstool_odds[2*i] < 0 and -barstool_odds[2*i] < fanduel_odds[2*j+1]):
                         print("Arbitrage found")
-                    if(barstool_odds[2*i+1] < 0 and -barstool_odds[2*i+1] < fanduel_odds[2*j+1]):
-                        print("Arbitrage found")
+
 
 
 profile = webdriver.FirefoxProfile()
@@ -127,23 +116,23 @@ desired = DesiredCapabilities.FIREFOX
 options = Options()
 #options.add_argument('-headless')
 options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36")
+options.add_argument('--disable-blink-features=AutomationControlled')
 #firefoxOptions = webdriver.FirefoxOptions()
 #firefoxOptions.headless = True
 
-driver = Chrome()
-driver2 = Chrome()
-
-
+fanduel_driver = Chrome()
+barstool_driver = Chrome()
+twitter_driver = Chrome()
 
 try:
     #driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {"source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"})
-    driver.set_window_size(1280, 800)
+    fanduel_driver.set_window_size(1280, 800)
 
-    #driver2.execute_script("Page.addScriptToEvaluateOnNewDocument", {"source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"})
-    driver2.set_window_size(1280, 800)
+    #barstool_driver.execute_script("Page.addScriptToEvaluateOnNewDocument", {"source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"})
+    barstool_driver.set_window_size(1280, 800)
     
-    navigateToFanduel(driver)
-    fanduelWindow= driver.current_window_handle
+    navigateToFanduel(fanduel_driver)
+    fanduelWindow= fanduel_driver.current_window_handle
 
   
     """body = driver.find_element_by_tag_name("body")
@@ -154,15 +143,17 @@ try:
             driver.switch_to.window(window_handle)
             break"""
 
-    navigateToBarstool(driver2)
+    navigateToBarstool(barstool_driver)
     time.sleep(5)
     #barstoolWindow=driver.current_window_handle
 
+
+
     while (True):
         #switchToWindow(barstoolWindow)
-        getDataFromBarstool(driver2)
+        getDataFromBarstool(barstool_driver)
         #switchToWindow(fanduelWindow)
-        getDataFromFanduel(driver)
+        getDataFromFanduel(fanduel_driver)
         checkForArbitrage()
         print("\nBarstool:")
         for p in barstool_teams:
@@ -181,7 +172,7 @@ try:
 
 finally:
     driver.quit()
-    driver2.quit()
+    barstool_driver.quit()
 
 
 
