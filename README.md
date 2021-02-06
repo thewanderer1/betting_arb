@@ -26,3 +26,12 @@ The plan for now should be as follows:
 4. Write the driver that polls these objects, confirms and submits the bets.
 
 Profit!!
+
+Key ways to not get banned:
+
+don't bet on clear mistakes (check to make sure the odds aren't too far off)
+
+bet rounded to nearest 10 (or rounder if possible)
+
+add delay (ms?) so the site doesn't detect youre automated
+
