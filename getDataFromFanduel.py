@@ -99,9 +99,15 @@ class ArbitrageBot(object):
 
             counter = counter + 1
 
+#this is going to have to be redone - the empty cards in barstool go down a different HTML tree
+
     def getDataFromBarstool_live(self,driver):
         barstool_soup = BeautifulSoup(driver.page_source, 'lxml')
-        barstool_teams_selector = barstool_soup.find_all('p', class_='body1 participant')
+        events = barstool_soup.find_all('p', class_='container wrap event-row match-row')
+
+        for e in events:
+            
+            
         barstool_odds_selector = barstool_soup.find_all('label', class_='outcome-card label event-chip-wrapper')
         counter = 0
         for t in barstool_teams_selector:
