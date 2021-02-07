@@ -10,11 +10,25 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 import random
 import time
+import twitter
+
+
+api = twitter.Api(consumer_key='YtALy1rMz8KaqP2XrqT9SSpe2',
+                      consumer_secret='r4KzqjXO5XTX5O71AU5N6JtLuKQY2PGKPBNCGmJeHdos6TWcOc',
+                      access_token_key='1358136718663245824-gGWy53o2cSWhpbkPtJ7UXQMyA0n7QN',
+                      access_token_secret='QV7r5a7fQAMabCRyIJGKsnP8xKd6H6KcRSz3ty8l3pBaR')
 
 fanduel_teams = []
 fanduel_odds = []
 barstool_teams = []
 barstool_odds = []
+arbitrage_opportunities = []
+        
+
+def post_to_twitter(barstool_name,fanduel_name,barstool_odds,fanduel_odds):
+
+    status = api.PostUpdate('bs:'+barstool_name+'/'+str(barstool_odds)+' fd:'+fanduel_name+'/'+str(fanduel_odds))
+
 
 def navigateToFanduel(driver):
     driver.get("https://sportsbook.fanduel.com")
@@ -83,19 +97,36 @@ def checkForArbitrage():
             if barstool_teams[2*i][len(barstool_teams[2*i]) - 4:] == fanduel_teams[2*j][len(fanduel_teams[2*j]) - 4:]: #check if the team names are the same
                 if(barstool_odds[2*i] > 0):
                     if(fanduel_odds[2*j+1] < 0 and -fanduel_odds[2*j+1] < barstool_odds[2*i]):
-                        print("Arbitrage found")
+                        arbopp_name = barstool_teams[2*i][len(barstool_teams[2*i]) - 4:] + fanduel_teams[2*j+1][len(fanduel_teams[2*j+1]) - 4:] + str(barstool_odds[2*i])+str(fanduel_odds[2*j+1])
+                        if arbopp_name not in arbitrage_opportunities:
+                            arbitrage_opportunities.append(arbopp_name)
+                            post_to_twitter(barstool_teams[2*i],fanduel_teams[2*j+1],barstool_odds[2*i],fanduel_odds[2*j+1])
+                            print('Arbitrage found')
+
 
                 if(barstool_odds[2*i+1] > 0):
                     if(fanduel_odds[2*j] < 0 and -fanduel_odds[2*j] < barstool_odds[2*i+1]):
-                        print("Arbitrage found")
+                        arbopp_name = barstool_teams[2*i+1][len(barstool_teams[2*i+1]) - 4:] + fanduel_teams[2*j][len(fanduel_teams[2*j]) - 4:] + str(barstool_odds[2*i+1])+str(fanduel_odds[2*j])
+                        if arbopp_name not in arbitrage_opportunities:
+                            arbitrage_opportunities.append(arbopp_name)
+                            post_to_twitter(barstool_teams[2*i+1],fanduel_teams[2*j],barstool_odds[2*i+1],fanduel_odds[2*j])
+                            print('Arbitrage found')
 
                 if(fanduel_odds[2*i] > 0):
                     if(barstool_odds[2*i+1] < 0 and -barstool_odds[2*i+1] < fanduel_odds[2*j]):
-                        print("Arbitrage found")
+                        arbopp_name = barstool_teams[2*i+1][len(barstool_teams[2*i+1]) - 4:] + fanduel_teams[2*j][len(fanduel_teams[2*j]) - 4:] + str(barstool_odds[2*i+1])+str(fanduel_odds[2*j])
+                        if arbopp_name not in arbitrage_opportunities:
+                            arbitrage_opportunities.append(arbopp_name)
+                            post_to_twitter(barstool_teams[2*i+1],fanduel_teams[2*j],barstool_odds[2*i+1],fanduel_odds[2*j])
+                            print('Arbitrage found')
 
                 if(fanduel_odds[2*i+1] > 0):
                     if(barstool_odds[2*i] < 0 and -barstool_odds[2*i] < fanduel_odds[2*j+1]):
-                        print("Arbitrage found")
+                        arbopp_name = barstool_teams[2*i][len(barstool_teams[2*i]) - 4:] + fanduel_teams[2*j+1][len(fanduel_teams[2*j+1]) - 4:] + str(barstool_odds[2*i])+str(fanduel_odds[2*j+1])
+                        if arbopp_name not in arbitrage_opportunities:
+                            arbitrage_opportunities.append(arbopp_name)
+                            post_to_twitter(barstool_teams[2*i],fanduel_teams[2*j+1],barstool_odds[2*i],fanduel_odds[2*j+1])
+                            print('Arbitrage found')
 
 
 def main():
