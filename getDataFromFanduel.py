@@ -23,6 +23,10 @@ fanduel_odds = []
 barstool_teams = []
 barstool_odds = []
 arbitrage_opportunities = []
+
+
+
+
         
 
 def post_to_twitter(barstool_name,fanduel_name,barstool_odds,fanduel_odds):
@@ -153,7 +157,7 @@ def main():
 
     fanduel_driver = Chrome()
     barstool_driver = Chrome()
-    twitter_driver = Chrome()
+
 
     try:
         #driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {"source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"})
@@ -181,7 +185,8 @@ def main():
 
 
         while (True):
-            #switchToWindow(barstoolWindow)
+            time.sleep(.9)
+            #switchToWindow(barstoolWindow)g
             getDataFromBarstool(barstool_driver)
             #switchToWindow(fanduelWindow)
             getDataFromFanduel(fanduel_driver)
@@ -202,7 +207,7 @@ def main():
 
 
     finally:
-        driver.quit()
+        fanduel_driver.quit()
         barstool_driver.quit()
 
 
