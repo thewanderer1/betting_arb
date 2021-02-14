@@ -1,30 +1,35 @@
-import getDataFromFanduel
-
+from getDataFromFanduel import ArbitrageBot
+from fanduelBot import FanduelBot
+from barstoolLiveBot import BarstoolLiveBot
+from barstoolUpcomingBot import BarstoolUpcomingBot
 
 def main():
-	getDataFromFanduel.fanduel_teams = ['brooklyn nets', 'washington wizards']
-	getDataFromFanduel.barstool_teams = ['brooklyn nets','washington wizards']
+	fanduelnba = FanduelBot("https://sportsbook.fanduel.com/sports/navigation/830.1/10107.3")
+	barstoolUpcomingnba = BarstoolUpcomingBot("https://www.barstoolsportsbook.com/sports/basketball/nba")
+	a = ArbitrageBot(fanduelnba,barstoolUpcomingnba)
+	a.scraper1.teams = ['brooklyn nets', 'washington wizards']
+	a.scraper2.teams = ['brooklyn nets','washington wizards']
 
-	getDataFromFanduel.barstool_odds = [35,-35]
-	getDataFromFanduel.fanduel_odds = [30,-40]
+	a.scraper1.odds = [35,-35]
+	a.scraper2.odds = [30,-40]
 
 	print('nothing should print below')
-	getDataFromFanduel.checkForArbitrage()
+	a.checkForArbitrage()
 
 	print('arbitrage should be found below')
-	getDataFromFanduel.barstool_odds = [35,-35]
-	getDataFromFanduel.fanduel_odds = [30,-30]
-	getDataFromFanduel.checkForArbitrage()
+	a.scraper1.odds = [35,-35]
+	a.scraper2.odds = [30,-30]
+	a.checkForArbitrage()
 
 	print('arbitrage should be found below')
-	getDataFromFanduel.barstool_odds = [35,-35]
-	getDataFromFanduel.fanduel_odds = [50,-40]
-	getDataFromFanduel.checkForArbitrage()
+	a.scraper1.odds = [35,-35]
+	a.scraper2.odds = [50,-40]
+	a.checkForArbitrage()
 
 	print('two arbitrages should be found below')
-	getDataFromFanduel.barstool_odds = [45,-35]
-	getDataFromFanduel.fanduel_odds = [50,-40]
-	getDataFromFanduel.checkForArbitrage()
+	a.scraper1.odds = [45,-35]
+	a.scraper2.odds = [50,-40]
+	a.checkForArbitrage()
 
 
 if __name__ == '__main__':
