@@ -21,22 +21,28 @@ class BarstoolUpcomingBot(ScraperBot):
 
     def getData(self):
         barstool_soup = BeautifulSoup(self.driver.page_source, 'lxml')
+        events = barstool_soup.find_all('div', class_='container wrap event-row match-row')
         self.teams.clear()
         self.odds.clear()
-        barstool_teams_selector = barstool_soup.find_all('p', class_='body1 participant upcoming')
-        barstool_odds_selector = barstool_soup.find_all('label', class_='outcome-card label event-chip-wrapper')
-        counter = 0
-        for t in barstool_teams_selector:
-            self.teams.append(t.get_text().strip())
 
-        for p in barstool_odds_selector:
-            if(counter%6 == 2 or counter%6 == 3):
-                s = p["aria-label"]
-                x = s.find("Odds:", 0, len(s))
-                s1 = s[x:][6:]
-                try:
-                    self.odds.append(int(s1))
-                except ValueError:
-                    self.odds.append(0) #placeholder for an odds value that isn't there yet(the value might be quickly changing or something else)
+        for e in events:
+            barstool_teams_selector = e.find_all('p', class_='body1 participant upcoming')
+            barstool_odds_selector = e.find_all('label', class_='outcome-card label event-chip-wrapper')
+            tsl = 0
+            osl = 0
+            for t in barstool_teams_selector:
+                self.teams.append(t.get_text().strip())
+                tsl+=1
 
-            counter = counter + 1
+            for p in barstool_odds_selector:
+                    s = p["aria-label"]
+                    if(s.find("moneyline") >= 0):
+                        osl+=1
+                        x = s.find("Odds:", 0, len(s))
+                        s1 = s[x:][6:]
+                        try:
+                            self.odds.append(int(s1))
+                        except ValueError:
+                            self.odds.append(0) #placeholder for an odds value that isn't there yet(the value might be quickly changing or something else)
+            for i in range(0,tsl - osl):
+                self.odds.append(0) #placeholder for an odds value that isn't there yet(the value might be quickly changing or something else)

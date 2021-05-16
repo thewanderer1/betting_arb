@@ -15,6 +15,8 @@ import pudb
 from fanduelBot import FanduelBot
 from barstoolUpcomingBot import BarstoolUpcomingBot
 from barstoolLiveBot import BarstoolLiveBot
+from fanduelLiveBot import FanduelLiveBot
+
 
 class ArbitrageBot(object):
     """docstring for ArbitrageBot"""
@@ -84,10 +86,11 @@ class ArbitrageBot(object):
 
 
 def main():
-    fanduelnba = FanduelBot("https://sportsbook.fanduel.com/sports/navigation/830.1/10107.3")
-    barstoolUpcomingnba = BarstoolUpcomingBot("https://www.barstoolsportsbook.com/sports/basketball/nba")
-    #barstoolLivenba = BarstoolLiveBot("https://www.barstoolsportsbook.com/sports/basketball/nba?list=live")
-    a = ArbitrageBot(fanduelnba,barstoolUpcomingnba)
+    #fanduelnba = FanduelBot("https://sportsbook.fanduel.com/sports/navigation/830.1/10107.3")
+    #barstoolUpcomingnba = BarstoolUpcomingBot("https://www.barstoolsportsbook.com/sports/basketball/nba")
+    barstoolLivenba = BarstoolLiveBot("https://www.barstoolsportsbook.com/sports/basketball/nba?list=live")
+    fanduelLivenba = FanduelLiveBot("https://sportsbook.fanduel.com/sports/navigation/830.1/10528.3")
+    a = ArbitrageBot(fanduelLivenba,barstoolLivenba)
     a.run()
 
 if __name__ == '__main__':

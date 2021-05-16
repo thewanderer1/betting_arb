@@ -12,7 +12,7 @@ import random
 import time
 from scraperBot import ScraperBot
 
-class FanduelBot(ScraperBot):
+class FanduelLiveBot(ScraperBot):
 
     def __init__(self, url): #the url that corresponds to the sport nba/nfl/...
         super().__init__(url)
@@ -21,7 +21,7 @@ class FanduelBot(ScraperBot):
         soup = BeautifulSoup(self.driver.page_source, 'lxml')
         self.teams.clear()
         self.odds.clear()
-        game_selector = soup.find_all('div', class_='event')
+        game_selector = soup.find_all('div', class_='flex wrapper')
         counter = 0
         for g in game_selector:
             ts = g.find_all('span', class_='name')
@@ -30,6 +30,7 @@ class FanduelBot(ScraperBot):
             osl = 0
             for t in ts:
                 tsl+=1
+                self.teams.append(t.get_text().strip())
             for p in ps.find_all('div', class_='selectionprice'):
                     osl+=1
                     s = p.get_text().strip()
