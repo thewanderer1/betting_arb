@@ -86,7 +86,7 @@ class ArbitrageBot(object):
 def main():
     fanduelnba = FanduelBot("https://sportsbook.fanduel.com/sports/navigation/830.1/10107.3")
     barstoolUpcomingnba = BarstoolUpcomingBot("https://www.barstoolsportsbook.com/sports/basketball/nba")
-    barstoolLivenba = BarstoolLiveBot("https://www.barstoolsportsbook.com/sports/basketball/nba?list=live")
+    #barstoolLivenba = BarstoolLiveBot("https://www.barstoolsportsbook.com/sports/basketball/nba?list=live")
     a = ArbitrageBot(fanduelnba,barstoolUpcomingnba)
     a.run()
 

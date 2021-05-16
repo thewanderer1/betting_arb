@@ -21,18 +21,19 @@ class FanduelBot(ScraperBot):
         soup = BeautifulSoup(self.driver.page_source, 'lxml')
         self.teams.clear()
         self.odds.clear()
-        teams_selector = soup.find_all('span', class_='name')
-        odds_selector = soup.find_all('div', class_='selectionprice')
+        game_selector = soup.find_all('div', class_='event')
         counter = 0
-        for t in teams_selector:
-            self.teams.append(t.get_text().strip())
-
-        for p in odds_selector:
-            if(counter%6 == 2 or counter%6 == 3):
-                s = p.get_text().strip()
-                try:
-                    self.odds.append(int(s))
-                except ValueError:
-                    self.odds.append(0) #placeholder for an odds value that isn't there yet(the value might be quickly changing or something else)
+        for g in game_selector:
+            ts = g.find_all('span', class_='name')
+            ps = g.find('div', class_='market money')
+            for t in ts:
+                self.teams.append(t.get_text().strip())
+            for p in ps.find_all('div', class_='selectionprice'):
+                #if(counter%6 == 2 or counter%6 == 3):
+                    s = p.get_text().strip()
+                    try:
+                        self.odds.append(int(s))
+                    except ValueError:
+                        self.odds.append(0)
 
             counter = counter + 1
