@@ -21,17 +21,17 @@ class FanduelLiveBot(ScraperBot):
         soup = BeautifulSoup(self.driver.page_source, 'lxml')
         self.teams.clear()
         self.odds.clear()
-        game_selector = soup.find_all('div', class_='flex wrapper')
+        game_selector = soup.find_all('div', class_='r w hz h')
         counter = 0
         for g in game_selector:
-            ts = g.find_all('span', class_='name')
-            ps = g.find('div', class_='market money')
+            ts = g.find_all('span', class_='r w if ig ih ii ho hp hq hu ij h fv as ik bm')
+            ps = g.find_all('div', class_='ip iq ao fc iz ja av')
             tsl = 0
             osl = 0
             for t in ts:
                 tsl+=1
                 self.teams.append(t.get_text().strip())
-            for p in ps.find_all('div', class_='selectionprice'):
+            for p in ps:
                     osl+=1
                     s = p.get_text().strip()
                     try:

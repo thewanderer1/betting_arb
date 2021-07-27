@@ -4,6 +4,8 @@ from fanduelBot import FanduelBot
 from barstoolUpcomingBot import BarstoolUpcomingBot
 from barstoolLiveBot import BarstoolLiveBot
 from fanduelLiveBot import FanduelLiveBot
+from DraftkingsBot import DraftkingsBot
+from FoxbetBot import FoxbetBot
 
 
 class ArbitrageBot(object):
@@ -75,11 +77,38 @@ class ArbitrageBot(object):
 
 def main():
     #fanduelnba = FanduelBot("https://sportsbook.fanduel.com/sports/navigation/830.1/10107.3")
-    #barstoolUpcomingnba = BarstoolUpcomingBot("https://www.barstoolsportsbook.com/sports/basketball/nba")
-    barstoolLivenba = BarstoolLiveBot("https://www.barstoolsportsbook.com/sports/basketball/nba?list=live")
-    fanduelLivenba = FanduelLiveBot("https://sportsbook.fanduel.com/sports/navigation/830.1/10528.3")
-    a = ArbitrageBot(fanduelLivenba,barstoolLivenba)
-    a.run()
+    # barstoolUpcomingnba = BarstoolUpcomingBot("https://www.barstoolsportsbook.com/sports/baseball/mlb")
+    # barstoolLivenba = BarstoolLiveBot("https://www.barstoolsportsbook.com/sports/baseball/mlb?ist=live")
+    # fanduelLivenba = FanduelLiveBot("https://sportsbook.fanduel.com/navigation/mlb")
+    # a = ArbitrageBot(fanduelLivenba,barstoolLivenba)
+    # a.run()
+
+    # fanduelLiveMLB = FanduelLiveBot("https://sportsbook.fanduel.com/navigation/mlb")
+
+    # fanduelLiveMLB.navigate()
+
+    # fanduelLiveMLB.getData()
+
+    # print(fanduelLiveMLB.teams)
+    # print(fanduelLiveMLB.odds)
+
+    # dkb = DraftkingsBot("https://sportsbook.draftkings.com/leagues/baseball/88670847")
+
+    # dkb.navigate()
+
+    # dkb.getData()
+
+    # print(dkb.teams)
+    # print(dkb.odds)
+
+    fbb = FoxbetBot('https://mi.foxbet.com/#/baseball/competitions/8661882')
+
+    fbb.navigate()
+
+    fbb.getData()
+    print(fbb.teams)
+    print(fbb.odds)
+
 
 if __name__ == '__main__':
     main()
