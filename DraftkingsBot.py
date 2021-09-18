@@ -22,13 +22,13 @@ class DraftkingsBot(ScraperBot):
 
     def getData(self):
         foxbetsoup = BeautifulSoup(self.driver.page_source, 'lxml')
-        events = foxbetsoup.find_all('div', class_='container wrap event-row match-row')
+        events = foxbetsoup.find_all('tbody', class_='sportsbook-table__body')
         self.teams.clear()
         self.odds.clear()
 
         for e in events:
-            barstool_teams_selector = e.find_all('p', class_='body1 participant upcoming')
-            barstool_odds_selector = e.find_all('label', class_='outcome-card label event-chip-wrapper')
+            barstool_teams_selector = e.find_all('div', class_='event-cell__name-text')
+            barstool_odds_selector = e.find_all('span', class_='sportsbook-odds american no-margin default-color')
             tsl = 0
             osl = 0
             for t in barstool_teams_selector:
@@ -36,15 +36,14 @@ class DraftkingsBot(ScraperBot):
                 tsl+=1
 
             for p in barstool_odds_selector:
-                    s = p["aria-label"]
-                    if(s.find("moneyline") >= 0):
-                        osl+=1
-                        x = s.find("Odds:", 0, len(s))
-                        s1 = s[x:][6:]
-                        try:
-                            self.odds.append(int(s1))
-                        except ValueError:
-                            self.odds.append(0) #placeholder for an odds value that isn't there yet(the value might be quickly changing or something else)
+
+                value = p.get_text().strip()
+                osl += 1
+                if value:
+                    self.odds.append(value)
+                else:
+                    self.odds.append(0)
+
             for i in range(0,tsl - osl):
                 self.odds.append(0) #placeholder for an odds value that isn't there yet(the value might be quickly changing or something else)
 
