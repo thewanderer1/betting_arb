@@ -101,13 +101,21 @@ def main():
     # print(dkb.teams)
     # print(dkb.odds)
 
-    fbb = FoxbetBot('https://mi.foxbet.com/#/baseball/competitions/8661882')
+    """fbb = FoxbetBot('https://mi.foxbet.com/#/baseball/competitions/8661882')
 
     fbb.navigate()
 
     fbb.getData()
     print(fbb.teams)
-    print(fbb.odds)
+    print(fbb.odds)"""
+
+    bub = BarstoolUpcomingBot('https://www.barstoolsportsbook.com/sports/american_football/nfl')
+
+    bub.navigate()
+
+    bub.getData()
+    print(bub.teams)
+    print(bub.odds)
 
 
 if __name__ == '__main__':

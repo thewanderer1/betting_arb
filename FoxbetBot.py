@@ -21,23 +21,37 @@ class FoxbetBot(ScraperBot):
         super().__init__(url)
 
     def getData(self):
-        foxbet_soup = BeautifulSoup(self.driver.page_source, 'lxml')
-        event = foxbet_soup.find('div', class_='market-content')
-        
-
-        html_teams = event.find_all('span', class_='teamName')
-        html_odds_struct =  event.find_all('div', class_='afEvt__teamMarkets')
-
+        """
+        Note: This has been tested on NFL, NCAAF, MLB as of 9/18/21 and should work on NBA and anything with the 3 bet types
+        """
         self.teams.clear()
         self.odds.clear()
 
-        for t in html_teams:
-            self.teams.append(t.get_text().strip())
+        foxbet_soup = BeautifulSoup(self.driver.page_source, 'lxml')
+        event = foxbet_soup.find('div', class_='market-content')
+        games = event.find_all('section')
 
-        for hos in html_odds_struct:
-            od = hos.a.em.get_text().strip()
 
-            if od == 'OTB':
-                self.odds.append(np.nan)
-            else:
-                self.odds.append(int(od))
+        for game in games:
+            l = len(self.odds)
+            teamlist = game.find_all('span', class_='teamName')
+            for t in teamlist:
+                self.teams.append(t.get_text().strip())
+
+            oddslist = game.find_all('div', class_='afEvt__teamMarkets')
+            #oddslist = game.find_all('em', class_='button__bet__odds selectionOdds-event')#gives all 6 possible odds if they exist
+
+
+            for hos in oddslist: #there should be two elements in this list, one for each team
+                alist = hos.find_all('a')
+                counter = -1
+                for a in alist: # we assume that there are 3 or 6 a elements in this list
+                    counter += 1
+                    if (len(alist)== 6 and counter % 6 != 3) or (len(alist)==3 and counter%3 !=1):  # used to skip over spread and total points odds
+                        continue
+                    od = a.find_all('em', class_='button__bet__odds selectionOdds-event')#should be either 1 or 0 element in this list
+                    if len(od)==1:
+                        self.odds.append(int(od[0].get_text().strip()))
+                    else:
+                        self.odds.append(np.nan)
+
