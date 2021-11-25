@@ -1,17 +1,4 @@
-from selenium import webdriver
-from selenium.webdriver import Chrome
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
-#from fake_useragent import UserAgent
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-import random
-import time
-import twitter
-import pudb
 from scraperBot import ScraperBot
 import numpy as np
 
@@ -39,16 +26,17 @@ class FoxbetBot(ScraperBot):
                 self.teams.append(t.get_text().strip())
 
             oddslist = game.find_all('div', class_='afEvt__teamMarkets')
-            #oddslist = game.find_all('em', class_='button__bet__odds selectionOdds-event')#gives all 6 possible odds if they exist
-
-
             for hos in oddslist: # there should be two elements in this list, one for each team
                 alist = hos.find_all('a')
                 counter = -1
                 for a in alist: #
-                    if a.
-                    if len(od)==1:
-                        self.odds.append(int(od[0].get_text().strip()))
+                    l2 = len(a['class'])
+                    if l2 > 6:
+                        l3 = len(a['class'][5])
+                    if not (l2 > 6 and a['class'][5][(l3 - 7):] == "FTOT-ML"): # screen for moneyline odds
+                        continue
+                    if len(a.find_all('em')) > 1:
+                        self.odds.append(int(a.em.string.strip())) # get the odds
                     else:
-                        self.odds.append(np.nan)
+                        self.odds.append(0) # the value is not there, it is being updated. The zero acts as a placeholder
 
