@@ -25,7 +25,7 @@ class ScraperBot(object):
         self.driver.get(self.url)
 
         ran = random.uniform(0.01,2)
-        time.sleep(1)
+        time.sleep(2)
         time.sleep(ran)
 
     #override always

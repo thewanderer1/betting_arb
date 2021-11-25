@@ -42,14 +42,11 @@ class FoxbetBot(ScraperBot):
             #oddslist = game.find_all('em', class_='button__bet__odds selectionOdds-event')#gives all 6 possible odds if they exist
 
 
-            for hos in oddslist: #there should be two elements in this list, one for each team
+            for hos in oddslist: # there should be two elements in this list, one for each team
                 alist = hos.find_all('a')
                 counter = -1
-                for a in alist: # we assume that there are 3 or 6 a elements in this list
-                    counter += 1
-                    if (len(alist)== 6 and counter % 6 != 3) or (len(alist)==3 and counter%3 !=1):  # used to skip over spread and total points odds
-                        continue
-                    od = a.find_all('em', class_='button__bet__odds selectionOdds-event')#should be either 1 or 0 element in this list
+                for a in alist: #
+                    if a.
                     if len(od)==1:
                         self.odds.append(int(od[0].get_text().strip()))
                     else:

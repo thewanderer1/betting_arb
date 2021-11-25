@@ -6,6 +6,7 @@ from barstoolLiveBot import BarstoolLiveBot
 from fanduelLiveBot import FanduelLiveBot
 from DraftkingsBot import DraftkingsBot
 from FoxbetBot import FoxbetBot
+from GoldenNuggetBot import GoldenNuggetBot
 
 
 class ArbitrageBot(object):
@@ -101,21 +102,44 @@ def main():
     # print(dkb.teams)
     # print(dkb.odds)
 
-    """fbb = FoxbetBot('https://mi.foxbet.com/#/baseball/competitions/8661882')
-
+    fbb = FoxbetBot('https://mi.foxbet.com/#/basketball/competitions/8936422')
     fbb.navigate()
-
     fbb.getData()
     print(fbb.teams)
-    print(fbb.odds)"""
+    print(fbb.odds)
+    # works for the following URLS
+    # https://mi.foxbet.com/#/american_football/competitions/8707516 - NFL
+    #
 
-    bub = BarstoolUpcomingBot('https://www.barstoolsportsbook.com/sports/american_football/nfl')
+    """fbb = FanduelBot("https://sportsbook.fanduel.com/sports/navigation/830.1/10107.3")
+    fbb.navigate()
+    fbb.getData()
+    print(fbb.teams)
+    print(fbb.odds)""" #doesn't work
+
+    """bub = BarstoolUpcomingBot('https://www.barstoolsportsbook.com/sports/basketball/nba')
 
     bub.navigate()
 
     bub.getData()
     print(bub.teams)
-    print(bub.odds)
+    print(bub.odds)""" # works
+
+    """bub = BarstoolLiveBot('https://www.barstoolsportsbook.com/sports/american_football/ncaaf?list=live')
+
+    bub.navigate()
+
+    bub.getData()
+    print(bub.teams)
+    print(bub.odds)""" # doesn't work
+
+    """bub = GoldenNuggetBot('https://mi-casino.goldennuggetcasino.com/sports/sport/3/football/matches?preselectedFilters=13')
+
+    bub.navigate()
+
+    bub.getData()
+    print(bub.teams)
+    print(bub.odds)""" # partially works
 
 
 if __name__ == '__main__':
