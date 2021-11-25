@@ -21,21 +21,21 @@ class DraftkingsBot(ScraperBot):
         super().__init__(url)
 
     def getData(self):
-        foxbetsoup = BeautifulSoup(self.driver.page_source, 'lxml')
-        events = foxbetsoup.find_all('tbody', class_='sportsbook-table__body')
+        dksoup = BeautifulSoup(self.driver.page_source, 'lxml')
+        events = dksoup.find_all('tbody', class_='sportsbook-table__body')
         self.teams.clear()
         self.odds.clear()
 
         for e in events:
-            barstool_teams_selector = e.find_all('div', class_='event-cell__name-text')
-            barstool_odds_selector = e.find_all('span', class_='sportsbook-odds american no-margin default-color')
+            dk_teams_selector = e.find_all('div', class_='event-cell__name-text')
+            dk_odds_selector = e.find_all('span', class_='sportsbook-odds american no-margin default-color')
             tsl = 0
             osl = 0
-            for t in barstool_teams_selector:
+            for t in dk_teams_selector:
                 self.teams.append(t.get_text().strip())
                 tsl+=1
 
-            for p in barstool_odds_selector:
+            for p in dk_odds_selector:
 
                 value = p.get_text().strip()
                 osl += 1
