@@ -2,6 +2,9 @@
 from bs4 import BeautifulSoup
 from scraperBot import ScraperBot
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
 
 class GoldenNuggetBot(ScraperBot):
 
@@ -12,7 +15,8 @@ class GoldenNuggetBot(ScraperBot):
         """
         Note: This has been tested on NFL, NCAAF, MLB as of 9/18/21 and should work on NBA and anything with the 3 bet types
         """
-        self.driver.find_element(By.CSS_SELECTOR, "[class='content-loader__load-more-link']").click()
+        a = WebDriverWait(self.driver,10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "a[class='content-loader__load-more-link']"))).click()
+        time.sleep(2)
         self.teams.clear()
         self.odds.clear()
 
