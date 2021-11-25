@@ -40,7 +40,7 @@ class DraftkingsBot(ScraperBot):
                 value = p.get_text().strip()
                 osl += 1
                 if value:
-                    self.odds.append(value)
+                    self.odds.append(int(value))
                 else:
                     self.odds.append(0)
 

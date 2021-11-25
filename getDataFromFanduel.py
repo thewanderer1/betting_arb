@@ -102,14 +102,15 @@ def main():
     # print(dkb.teams)
     # print(dkb.odds)
 
-    fbb = FoxbetBot('https://mi.foxbet.com/#/basketball/competitions/8936422')
+    """fbb = FoxbetBot('https://mi.foxbet.com/#/american_football/competitions/8211237')
     fbb.navigate()
     fbb.getData()
     print(fbb.teams)
-    print(fbb.odds)
+    print(fbb.odds)"""
     # works for the following URLS
     # https://mi.foxbet.com/#/american_football/competitions/8707516 - NFL
-    #
+    # https://mi.foxbet.com/#/basketball/competitions/8936422 - NBA
+    # https://mi.foxbet.com/#/american_football/competitions/8211237 - NCAAF
 
     """fbb = FanduelBot("https://sportsbook.fanduel.com/sports/navigation/830.1/10107.3")
     fbb.navigate()
@@ -118,29 +119,30 @@ def main():
     print(fbb.odds)""" #doesn't work
 
     """bub = BarstoolUpcomingBot('https://www.barstoolsportsbook.com/sports/basketball/nba')
-
     bub.navigate()
-
     bub.getData()
     print(bub.teams)
     print(bub.odds)""" # works
 
-    """bub = BarstoolLiveBot('https://www.barstoolsportsbook.com/sports/american_football/ncaaf?list=live')
+    """blb = BarstoolLiveBot('https://www.barstoolsportsbook.com/sports/american_football/ncaaf?list=live')
+    blb.navigate()
+    blb.getData()
+    print(blb.teams)
+    print(blb.odds)""" # works
 
+    """gnb = GoldenNuggetBot('https://mi-casino.goldennuggetcasino.com/sports/sport/3/football/matches?preselectedFilters=13')
     bub.navigate()
-
-    bub.getData()
-    print(bub.teams)
-    print(bub.odds)""" # doesn't work
-
-    """bub = GoldenNuggetBot('https://mi-casino.goldennuggetcasino.com/sports/sport/3/football/matches?preselectedFilters=13')
-
-    bub.navigate()
-
     bub.getData()
     print(bub.teams)
     print(bub.odds)""" # partially works
 
+    dkb = DraftkingsBot('https://sportsbook.draftkings.com/leagues/football/88670561')
+    dkb.navigate()
+    dkb.getData()
+    print(dkb.teams)
+    print(dkb.odds)
+
+    #
 
 if __name__ == '__main__':
     main()

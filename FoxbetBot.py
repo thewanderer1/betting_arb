@@ -4,12 +4,20 @@ import numpy as np
 
 class FoxbetBot(ScraperBot):
 
+    # works for the following URLS as of 11/25/21
+    # https://mi.foxbet.com/#/american_football/competitions/8707516 - NFL
+    # https://mi.foxbet.com/#/basketball/competitions/8936422 - NBA
+    # https://mi.foxbet.com/#/american_football/competitions/8211237 - NCAAF
+
     def __init__(self, url): #the url that corresponds to the sport nba/nfl/...
         super().__init__(url)
 
     def getData(self):
         """
-        Note: This has been tested on NFL, NCAAF, MLB as of 9/18/21 and should work on NBA and anything with the 3 bet types
+        tested for the following URLS as of 11/25/21
+        https://mi.foxbet.com/#/american_football/competitions/8707516 - NFL
+        https://mi.foxbet.com/#/basketball/competitions/8936422 - NBA
+        https://mi.foxbet.com/#/american_football/competitions/8211237 - NCAAF
         """
         self.teams.clear()
         self.odds.clear()
