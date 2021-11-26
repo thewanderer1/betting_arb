@@ -69,21 +69,6 @@ def main():
     a = ArbitrageBot(NFLbots)
     a.run()
 
-
-
-    #fanduelnba = FanduelBot("https://sportsbook.fanduel.com/sports/navigation/830.1/10107.3")
-    # barstoolUpcomingnba = BarstoolUpcomingBot("https://www.barstoolsportsbook.com/sports/baseball/mlb")
-    # barstoolLivenba = BarstoolLiveBot("https://www.barstoolsportsbook.com/sports/baseball/mlb?ist=live")
-    # fanduelLivenba = FanduelLiveBot("https://sportsbook.fanduel.com/navigation/mlb")
-    # a = ArbitrageBot(fanduelLivenba,barstoolLivenba)
-    # a.run()
-
-    # fanduelLiveMLB = FanduelLiveBot("https://sportsbook.fanduel.com/navigation/mlb")
-    # fanduelLiveMLB.navigate()
-    # fanduelLiveMLB.getData()
-    # print(fanduelLiveMLB.teams)
-    # print(fanduelLiveMLB.odds)
-
     """fbb = FoxbetBot('https://mi.foxbet.com/#/american_football/competitions/8211237')
     fbb.navigate()
     fbb.getData()
