@@ -9,18 +9,17 @@ class FoxbetBot(ScraperBot):
     # https://mi.foxbet.com/#/basketball/competitions/8936422 - NBA
     # https://mi.foxbet.com/#/american_football/competitions/8211237 - NCAAF
 
-    def __init__(self, url): #the url that corresponds to the sport nba/nfl/...
-        super().__init__(url)
+    def __init__(self, name, url): #the url that corresponds to the sport nba/nfl/...
+        super().__init__(name, url)
 
-    def getData(self):
+    def scrapePage(self):
         """
         tested for the following URLS as of 11/25/21
         https://mi.foxbet.com/#/american_football/competitions/8707516 - NFL
         https://mi.foxbet.com/#/basketball/competitions/8936422 - NBA
         https://mi.foxbet.com/#/american_football/competitions/8211237 - NCAAF
         """
-        self.teams.clear()
-        self.odds.clear()
+
 
         foxbet_soup = BeautifulSoup(self.driver.page_source, 'lxml')
         event = foxbet_soup.find('div', class_='market-content')
@@ -33,6 +32,7 @@ class FoxbetBot(ScraperBot):
             for t in teamlist:
                 self.teams.append(t.get_text().strip())
 
+            l1 = len(self.odds)
             oddslist = game.find_all('div', class_='afEvt__teamMarkets')
             for hos in oddslist: # there should be two elements in this list, one for each team
                 alist = hos.find_all('a')
@@ -48,3 +48,6 @@ class FoxbetBot(ScraperBot):
                     else:
                         self.odds.append(0) # the value is not there, it is being updated. The zero acts as a placeholder
 
+            l2 = len(self.odds)
+            for i in range(l1 + 2 - l2): # if the odds are being updated, they may not be on the page, we put in placeholders
+                self.odds.append(0)

@@ -11,72 +11,67 @@ from GoldenNuggetBot import GoldenNuggetBot
 
 class ArbitrageBot(object):
     """docstring for ArbitrageBot"""
-    def __init__(self, scraper1, scraper2):
+    def __init__(self, scraperlist):
         self.api = twitter.Api(consumer_key='YtALy1rMz8KaqP2XrqT9SSpe2',
                       consumer_secret='r4KzqjXO5XTX5O71AU5N6JtLuKQY2PGKPBNCGmJeHdos6TWcOc',
                       access_token_key='1358136718663245824-gGWy53o2cSWhpbkPtJ7UXQMyA0n7QN',
                       access_token_secret='QV7r5a7fQAMabCRyIJGKsnP8xKd6H6KcRSz3ty8l3pBaR')
-        self.scraper1 = scraper1
-        self.scraper2 = scraper2
+        self.scraperlist = scraperlist
+        self.mastergamelist = []
         self.arbitrage_opportunities =[]
 
-    def post_to_twitter(self,name1,name2,odds1,odds2):
-
-        self.status = self.api.PostUpdate('bs:'+name1+'/'+str(odds1)+' fd:'+name2+'/'+str(odds2))
+    def post_to_twitter(self,name1, game1, name2, game2):
+        post = "Arbitrage found \n" + name1 + ": " + str(game1) + "\n" + name2 + ": " + str(game2)
+        self.status = self.api.PostUpdate(post)
 
     def checkForArbitrage(self):
-        for i in range(len(self.scraper2.odds)//2): 
-            for j in range(len(self.scraper1.odds)//2):
-                if self.scraper2.teams[2*i][len(self.scraper2.teams[2*i]) - 4:] == self.scraper1.teams[2*j][len(self.scraper1.teams[2*j]) - 4:]: #check if the team names are the same
-                    if(self.scraper2.odds[2*i] > 0):
-                        if(self.scraper1.odds[2*j+1] < 0 and -self.scraper1.odds[2*j+1] < self.scraper2.odds[2*i]):
-                            arbopp_name = self.scraper2.teams[2*i][len(self.scraper2.teams[2*i]) - 4:] + self.scraper1.teams[2*j+1][len(self.scraper1.teams[2*j+1]) - 4:] + str(self.scraper2.odds[2*i])+str(self.scraper1.odds[2*j+1])
-                            if arbopp_name not in self.arbitrage_opportunities:
-                                self.arbitrage_opportunities.append(arbopp_name)
-                                self.post_to_twitter(self.scraper2.teams[2*i],self.scraper1.teams[2*j+1],self.scraper2.odds[2*i],self.scraper1.odds[2*j+1])
-                                print('Arbitrage found')
+        for bot in self.scraperlist:
+            for gameName in bot.games:
+                if gameName not in self.mastergamelist:
+                    self.mastergamelist.append(gameName)
 
-
-                    if(self.scraper2.odds[2*i+1] > 0):
-                        if(self.scraper1.odds[2*j] < 0 and -self.scraper1.odds[2*j] < self.scraper2.odds[2*i+1]):
-                            arbopp_name = self.scraper2.teams[2*i+1][len(self.scraper2.teams[2*i+1]) - 4:] + self.scraper1.teams[2*j][len(self.scraper1.teams[2*j]) - 4:] + str(self.scraper2.odds[2*i+1])+str(self.scraper1.odds[2*j])
-                            if arbopp_name not in self.arbitrage_opportunities:
-                                self.arbitrage_opportunities.append(arbopp_name)
-                                self.post_to_twitter(self.scraper2.teams[2*i+1],self.scraper1.teams[2*j],self.scraper2.odds[2*i+1],self.scraper1.odds[2*j])
-                                print('Arbitrage found')
-
-                    if(self.scraper1.odds[2*i] > 0):
-                        if(self.scraper2.odds[2*i+1] < 0 and -self.scraper2.odds[2*i+1] < self.scraper1.odds[2*j]):
-                            arbopp_name = self.scraper2.teams[2*i+1][len(self.scraper2.teams[2*i+1]) - 4:] + self.scraper1.teams[2*j][len(self.scraper1.teams[2*j]) - 4:] + str(self.scraper2.odds[2*i+1])+str(self.scraper1.odds[2*j])
-                            if arbopp_name not in self.arbitrage_opportunities:
-                                self.arbitrage_opportunities.append(arbopp_name)
-                                self.post_to_twitter(self.scraper2.teams[2*i+1],self.scraper1.teams[2*j],self.scraper2.odds[2*i+1],self.scraper1.odds[2*j])
-                                print('Arbitrage found')
-
-                    if(self.scraper1.odds[2*i+1] > 0):
-                        if(self.scraper2.odds[2*i] < 0 and -self.scraper2.odds[2*i] < self.scraper1.odds[2*j+1]):
-                            arbopp_name = self.scraper2.teams[2*i][len(self.scraper2.teams[2*i]) - 4:] + self.scraper1.teams[2*j+1][len(self.scraper1.teams[2*j+1]) - 4:] + str(self.scraper2.odds[2*i])+str(self.scraper1.odds[2*j+1])
-                            if arbopp_name not in self.arbitrage_opportunities:
-                                self.arbitrage_opportunities.append(arbopp_name)
-                                self.post_to_twitter(self.scraper2.teams[2*i],self.scraper1.teams[2*j+1],self.scraper2.odds[2*i],self.scraper1.odds[2*j+1])
-                                print('Arbitrage found')
-
+        for gameName in self.mastergamelist:
+            gamelist = []
+            for bot in self.scraperlist:
+                if gameName in bot.games:
+                    gamelist.append(bot)
+            if len(gamelist) == 0:
+                self.mastergamelist.remove(g)
+                continue
+            l = len(gamelist)
+            for i in range(l):
+                for j in range(i + 1, l):
+                    if (gamelist[i].games[gameName].checkForArbitrage(gamelist[j].games[gameName])):
+                        self.post_to_twitter(gamelist[i].name, gamelist[i].games[gameName], gamelist[j].name, gamelist[j].games[gameName])
 
     def run(self):
-        self.scraper1.navigate()
-        self.scraper2.navigate()
+        for bot in self.scraperlist:
+            bot.navigate()
         time.sleep(5)
 
         while (True):
+            print("checking")
             time.sleep(.9)
-            self.scraper1.getData()
-            self.scraper2.getData()
-
+            for bot in self.scraperlist:
+                bot.getData()
             self.checkForArbitrage()
 
 
 
 def main():
+
+    NFLbots = []
+    NFLbots.append(FoxbetBot("Foxbet NFL", 'https://mi.foxbet.com/#/american_football/competitions/8707516'))
+    NFLbots.append(BarstoolUpcomingBot("Barstool Upcoming NFL", 'https://www.barstoolsportsbook.com/sports/american_football/nfl'))
+    NFLbots.append(BarstoolLiveBot("Barstool Live NFL", 'https://www.barstoolsportsbook.com/sports/american_football/nfl?list=live'))
+    NFLbots.append(GoldenNuggetBot("Golden Nugget NFL", 'https://mi-casino.goldennuggetcasino.com/sports/sport/3/football/matches?preselectedFilters=13'))
+    NFLbots.append(DraftkingsBot("DraftKings NFL", 'https://sportsbook.draftkings.com/leagues/football/88670561'))
+
+    a = ArbitrageBot(NFLbots)
+    a.run()
+
+
+
     #fanduelnba = FanduelBot("https://sportsbook.fanduel.com/sports/navigation/830.1/10107.3")
     # barstoolUpcomingnba = BarstoolUpcomingBot("https://www.barstoolsportsbook.com/sports/baseball/mlb")
     # barstoolLivenba = BarstoolLiveBot("https://www.barstoolsportsbook.com/sports/baseball/mlb?ist=live")
@@ -85,32 +80,16 @@ def main():
     # a.run()
 
     # fanduelLiveMLB = FanduelLiveBot("https://sportsbook.fanduel.com/navigation/mlb")
-
     # fanduelLiveMLB.navigate()
-
     # fanduelLiveMLB.getData()
-
     # print(fanduelLiveMLB.teams)
     # print(fanduelLiveMLB.odds)
-
-    # dkb = DraftkingsBot("https://sportsbook.draftkings.com/leagues/baseball/88670847")
-
-    # dkb.navigate()
-
-    # dkb.getData()
-
-    # print(dkb.teams)
-    # print(dkb.odds)
 
     """fbb = FoxbetBot('https://mi.foxbet.com/#/american_football/competitions/8211237')
     fbb.navigate()
     fbb.getData()
     print(fbb.teams)
-    print(fbb.odds)"""
-    # works for the following URLS
-    # https://mi.foxbet.com/#/american_football/competitions/8707516 - NFL
-    # https://mi.foxbet.com/#/basketball/competitions/8936422 - NBA
-    # https://mi.foxbet.com/#/american_football/competitions/8211237 - NCAAF
+    print(fbb.odds)""" #
 
     """fbb = FanduelBot("https://sportsbook.fanduel.com/sports/navigation/830.1/10107.3")
     fbb.navigate()
@@ -130,19 +109,19 @@ def main():
     print(blb.teams)
     print(blb.odds)""" # works
 
-    """gnb = GoldenNuggetBot('https://mi-casino.goldennuggetcasino.com/sports/sport/3/football/matches?preselectedFilters=13')
-    bub.navigate()
-    bub.getData()
-    print(bub.teams)
-    print(bub.odds)""" # partially works
+    """gnb = GoldenNuggetBot('https://mi-casino.goldennuggetcasino.com/sports/sport/5/basketball/matches?preselectedFilters=all')
+    gnb.navigate()
+    gnb.getData()
+    print(gnb.teams)
+    print(gnb.odds)""" # partially works
 
-    dkb = DraftkingsBot('https://sportsbook.draftkings.com/leagues/football/88670561')
+    """dkb = DraftkingsBot('https://sportsbook.draftkings.com/leagues/football/88670561')
     dkb.navigate()
     dkb.getData()
     print(dkb.teams)
-    print(dkb.odds)
+    print(dkb.odds)"""
 
-    #
+
 
 if __name__ == '__main__':
     main()

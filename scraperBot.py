@@ -1,25 +1,32 @@
-from selenium import webdriver
 from selenium.webdriver import Chrome
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
-#from fake_useragent import UserAgent
+from Game import Game
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
 import random
 import time
 
 class ScraperBot(object):
 
-    def __init__(self, url): #the url that corresponds to the sport nba/nfl/...
+    def __init__(self, name, url): #the url that corresponds to the sport nba/nfl/...
         self.teams = []
         self.odds = []
+        self.games = {}
+        self.name = name
         self.url = url
         self.driver = Chrome()
         self.driver.set_window_size(1280, 800)
-        
+
+    def getData(self):
+        """
+        This is the main method of the bot
+        """
+        self.clear()
+        self.scrapePage()
+        self.convertToDict()
+
+    def clear(self):
+        self.teams.clear()
+        self.odds.clear()
+        self.games.clear()
 
     def navigate(self):
         self.driver.get(self.url)
@@ -28,23 +35,22 @@ class ScraperBot(object):
         time.sleep(2)
         time.sleep(ran)
 
-    #override always
-    def getData(self):
+    #override this method always
+    def scrapePage(self):
+        """
+        This method scrapes for teams and odds
+        """
         soup = BeautifulSoup(self.driver.page_source, 'lxml')
-        self.teams.clear()
-        self.odds.clear()
-        teams_selector = soup.find_all('span', class_='name')
-        odds_selector = soup.find_all('div', class_='selectionprice')
-        counter = 0
-        for t in teams_selector:
-            self.teams.append(t.get_text().strip())
 
-        for p in odds_selector:
-            if(counter%6 == 2 or counter%6 == 3):
-                s = p.get_text().strip()
-                try:
-                    self.odds.append(int(s))
-                except ValueError:
-                    self.odds.append(0) #placeholder for an odds value that isn't there yet(the value might be quickly changing or something else)
-
-            counter = counter + 1
+    def convertToDict(self):
+        """
+        Converts the two arrays of teams and odds into a dictionary
+        """
+        numgames = len(self.teams)
+        for i in range(numgames//2): # games should be even
+            team1 = self.teams[2 * i].split()[-1]
+            team2 = self.teams[2 * i + 1].split()[-1]
+            odds1 = self.odds[2 * i]
+            odds2 = self.odds[2 * i + 1]
+            g = Game(team1, odds1, team2, odds2)
+            self.games[g.name] = g

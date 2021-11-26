@@ -1,25 +1,13 @@
-from selenium import webdriver
-from selenium.webdriver import Chrome
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
-#from fake_useragent import UserAgent
+
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-import random
-import time
-import twitter
-import pudb
 from scraperBot import ScraperBot
 
 class BarstoolLiveBot(ScraperBot):
 
-    def __init__(self, url): #the url that corresponds to the sport nba/nfl/...
-        super().__init__(url)
+    def __init__(self, name, url): #the url that corresponds to the sport nba/nfl/...
+        super().__init__(name, url)
 
-    def getData(self):
+    def scrapePage(self):
         barstool_soup = BeautifulSoup(self.driver.page_source, 'lxml')
         events = barstool_soup.find_all('div', class_='container wrap event-row match-row')
         self.teams.clear()
