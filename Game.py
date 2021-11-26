@@ -18,8 +18,12 @@ class Game(object):
         if not (self.name == otherGame.name):
             return False
         if self.odds1 < 0 and self.odds2 > 0:
+            if otherGame.odds2 <= 0:
+                return False
             return self.odds2 > -(otherGame.odds1) or otherGame.odds2 > -(self.odds1)
         if self.odds1 > 0 and self.odds2 < 0:
+            if otherGame.odds1 <= 0:
+                return False
             return -self.odds2 < (otherGame.odds1) or -otherGame.odds2 < (self.odds1)
         return False
 

@@ -85,7 +85,7 @@ class ArbitrageBot(object):
         ratio = (pos + 100) * neg / ((neg + 100) * 100)
 
 
-        post = "Arbitrage found \n" + name1 + ": " + str(game1) + "\n" + name2 + ": " + str(game2) + "\n" + "For every dollar bet on " + posbook + ": " + posteam + " bet " + str(ratio) + " dollars on " + negbook + ": " + negteam + "\n" + "The guaranteed profit per dollar is " + str(a/100 - ratio)
+        post = "Arbitrage found \n" + name1 + ": " + str(game1) + "\n" + name2 + ": " + str(game2) + "\n" + "For every dollar bet on " + posbook + ": " + posteam + " bet " + str(ratio) + " dollars on " + negbook + ": " + negteam + "\n" + "The guaranteed profit per dollar is " + str(pos/100 - ratio)
         try:
             self.status = self.api.PostUpdate(post)
         finally:
