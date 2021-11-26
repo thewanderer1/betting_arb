@@ -6,6 +6,7 @@ from barstoolLiveBot import BarstoolLiveBot
 from fanduelLiveBot import FanduelLiveBot
 from DraftkingsBot import DraftkingsBot
 from FoxbetBot import FoxbetBot
+from GoldenNuggetBot import GoldenNuggetBot
 from WilliamHillBot import WilliamHillBot
 
 class ArbitrageBot(object):
@@ -19,9 +20,76 @@ class ArbitrageBot(object):
         self.mastergamelist = []
         self.arbitrage_opportunities =[]
 
+    def calculateBetRatio(self, game1, game2):
+        """
+        calculate the betting ratio to maximize guaranteed profit
+        """
+        pos = 0
+        neg = 0
+        if game1.odds1 < 0 and game1.odds2 > 0:
+            if game1.odds2 > -(game2.odds1):
+                pos = game1.odds2
+                neg = game2.odds1
+            if game2.odds2 > -(game1.odds1):
+                pos = game2.odds2
+                neg = game1.odds1
+        if game1.odds1 > 0 and game1.odds2 < 0:
+            if game1.odds1 > -(game2.odds2):
+                pos = game1.odds1
+                neg = game2.odds2
+            if game2.odds1 > -(game1.odds2):
+                pos = game2.odds1
+                neg = game1.odds2
+        ratio = (pos + 100) * neg / ((neg + 100) * 100)
+        return ratio
+
     def post_to_twitter(self,name1, game1, name2, game2):
-        post = "Arbitrage found \n" + name1 + ": " + str(game1) + "\n" + name2 + ": " + str(game2)
-        self.status = self.api.PostUpdate(post)
+
+        # First calculate the optimal betting ratio and which book/teams to bet on
+        pos = 0
+        posteam = ""
+        posbook = ""
+        neg = 0
+        negteam = ""
+        negbook = ""
+        if game1.odds1 < 0 and game1.odds2 > 0:
+            if game1.odds2 > -(game2.odds1):
+                pos = game1.odds2
+                posteam = game1.team2
+                posbook = name1
+                neg = game2.odds1
+                negteam = game2.team1
+                negbook = name2
+            if game2.odds2 > -(game1.odds1):
+                pos = game2.odds2
+                posteam = game2.team2
+                posbook = name2
+                neg = game1.odds1
+                negteam = game1.team1
+                negbook = name1
+        if game1.odds1 > 0 and game1.odds2 < 0:
+            if game1.odds1 > -(game2.odds2):
+                pos = game1.odds1
+                posteam = game1.team1
+                posbook = name1
+                neg = game2.odds2
+                negteam = game2.team2
+                negbook = name2
+            if game2.odds1 > -(game1.odds2):
+                pos = game2.odds2
+                posteam = game2.team2
+                posbook = name2
+                neg = game1.odds1
+                negteam = game1.team1
+                negbook = name1
+        ratio = (pos + 100) * neg / ((neg + 100) * 100)
+
+
+        post = "Arbitrage found \n" + name1 + ": " + str(game1) + "\n" + name2 + ": " + str(game2) + "\n" + "For every dollar bet on " + posbook + ": " + posteam + " bet " + str(ratio) + " dollars on " + negbook + ": " + negteam + "\n" + "The guaranteed profit per dollar is " + str(a/100 - ratio)
+        try:
+            self.status = self.api.PostUpdate(post)
+        finally:
+            return
 
     def checkForArbitrage(self):
         for bot in self.scraperlist:
@@ -35,7 +103,7 @@ class ArbitrageBot(object):
                 if gameName in bot.games:
                     gamelist.append(bot)
             if len(gamelist) == 0:
-                self.mastergamelist.remove(g)
+                self.mastergamelist.remove(gameName)
                 continue
             l = len(gamelist)
             for i in range(l):
