@@ -113,7 +113,15 @@ def main():
     NBAbots.append(DraftkingsBot("DraftKings NBA", 'https://sportsbook.draftkings.com/leagues/basketball/88670846'))
     NBAbots.append(WilliamHillBot("William Hill NBA", 'https://www.williamhill.com/us/mi/bet/basketball'))
 
-    a = ArbitrageBot(NBAbots)
+    NFLbots = []
+    NFLbots.append(FoxbetBot("Foxbet NFL", 'https://mi.foxbet.com/#/american_football/competitions/8707516'))
+    NFLbots.append(BarstoolUpcomingBot("Barstool Upcoming NFL", 'https://www.barstoolsportsbook.com/sports/american_football/nfl'))
+    NFLbots.append( BarstoolLiveBot("Barstool Live NFL", 'https://www.barstoolsportsbook.com/sports/american_football/nfl?list=live'))
+    NFLbots.append(GoldenNuggetBot("GoldenNugget NFL",'https://mi-casino.goldennuggetcasino.com/sports/sport/3/football/matches?preselectedFilters=13'))
+    NFLbots.append(DraftkingsBot("DraftKings NFL", 'https://sportsbook.draftkings.com/leagues/football/88670561'))
+    #NFLbots.append(WilliamHillBot("William Hill NFL", 'https://www.williamhill.com/us/mi/bet/basketball'))
+
+    a = ArbitrageBot(NBAbots + NFLbots)
     a.run()
 
     """fbb = FoxbetBot('https://mi.foxbet.com/#/american_football/competitions/8211237')

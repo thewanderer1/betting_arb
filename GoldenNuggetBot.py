@@ -23,17 +23,28 @@ class GoldenNuggetBot(ScraperBot):
         self.teams.clear()
         self.odds.clear()
 
+        # delete list of promos in right panel to avoid any extra data or games or anything
         soup = BeautifulSoup(self.driver.page_source, 'lxml')
-        hometeamslist = soup.find_all('div', class_='event-card__body__name__home')
-        awayteamslist = soup.find_all('div', class_='event-card__body__name__away')
-        moneylinelist = soup.find_all('div', class_='market__body market__body--2-col market__body--HH')
-        for i in range(len(hometeamslist)):
-            self.teams.append(hometeamslist[i].get_text().strip())
-            self.teams.append(awayteamslist[i].get_text().strip())
+        rightpanel = soup.find('div', class_='right-panels-group my-bets--floating')
+        rightpanel.decompose()
 
-        for m in moneylinelist:
-            for x in m.find_all('span', class_='button--outcome__price'):
-                self.odds.append( int( x.get_text().strip() ) )
+        events = soup.find_all('li')
+        for event in events:
+            hometeamslist = event.find_all('div', class_='event-card__body__name__home')
+            awayteamslist = event.find_all('div', class_='event-card__body__name__away')
+            moneylinelist = event.find_all('div', class_='market__body market__body--2-col market__body--HH')
+            for i in range(len(hometeamslist)):
+                self.teams.append(hometeamslist[i].get_text().strip())
+                self.teams.append(awayteamslist[i].get_text().strip())
+
+            l1 = len(self.odds)
+            for m in moneylinelist:
+                for x in m.find_all('span', class_='button--outcome__price'):
+                    self.odds.append( int( x.get_text().strip() ) )
+
+            l2 = len(self.odds)
+            for i in range(l1 + 2 * len(hometeamslist) - l2): #ensure that there are placeholders if the odds are missing
+                self.odds.append(0)
 
     def navigate(self):
         super(GoldenNuggetBot, self).navigate()
