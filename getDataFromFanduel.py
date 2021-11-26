@@ -121,57 +121,29 @@ class ArbitrageBot(object):
             time.sleep(.9)
             for bot in self.scraperlist:
                 bot.getData()
+                #print(bot.games)
             self.checkForArbitrage()
 
 
 
 def main():
 
-    NFLbots = []
-    NFLbots.append(FoxbetBot("Foxbet NFL", 'https://mi.foxbet.com/#/american_football/competitions/8707516'))
-    NFLbots.append(BarstoolUpcomingBot("Barstool Upcoming NFL", 'https://www.barstoolsportsbook.com/sports/american_football/nfl'))
-    NFLbots.append(BarstoolLiveBot("Barstool Live NFL", 'https://www.barstoolsportsbook.com/sports/american_football/nfl?list=live'))
-    NFLbots.append(GoldenNuggetBot("Golden Nugget NFL", 'https://mi-casino.goldennuggetcasino.com/sports/sport/3/football/matches?preselectedFilters=13'))
-    NFLbots.append(DraftkingsBot("DraftKings NFL", 'https://sportsbook.draftkings.com/leagues/football/88670561'))
+    NBAbots = []
+    NBAbots.append(FoxbetBot("Foxbet NBA", 'https://mi.foxbet.com/#/basketball/competitions/8936422'))
+    NBAbots.append(BarstoolUpcomingBot("Barstool Upcoming NBA", 'https://www.barstoolsportsbook.com/sports/basketball/nba'))
+    NBAbots.append(BarstoolLiveBot("Barstool Live NBA", 'https://www.barstoolsportsbook.com/sports/basketball/nba?list=live'))
+    NBAbots.append(GoldenNuggetBot("GoldenNugget NBA", 'https://mi-casino.goldennuggetcasino.com/sports/sport/5/basketball/matches?preselectedFilters=543'))
+    NBAbots.append(DraftkingsBot("DraftKings NBA", 'https://sportsbook.draftkings.com/leagues/basketball/88670846'))
+    NBAbots.append(WilliamHillBot("William Hill NBA", 'https://www.williamhill.com/us/mi/bet/basketball'))
 
-    a = ArbitrageBot(NFLbots)
+    a = ArbitrageBot(NBAbots)
     a.run()
 
     """fbb = FoxbetBot('https://mi.foxbet.com/#/american_football/competitions/8211237')
     fbb.navigate()
     fbb.getData()
     print(fbb.teams)
-    print(fbb.odds)""" #
-
-    """fbb = FanduelBot("https://sportsbook.fanduel.com/sports/navigation/830.1/10107.3")
-    fbb.navigate()
-    fbb.getData()
-    print(fbb.teams)
-    print(fbb.odds)""" #doesn't work
-
-    """bub = BarstoolUpcomingBot('https://www.barstoolsportsbook.com/sports/basketball/nba')
-    bub.navigate()
-    bub.getData()
-    print(bub.teams)
-    print(bub.odds)""" # works
-
-    """blb = BarstoolLiveBot('https://www.barstoolsportsbook.com/sports/american_football/ncaaf?list=live')
-    blb.navigate()
-    blb.getData()
-    print(blb.teams)
-    print(blb.odds)""" # works
-
-    """gnb = GoldenNuggetBot('https://mi-casino.goldennuggetcasino.com/sports/sport/5/basketball/matches?preselectedFilters=all')
-    gnb.navigate()
-    gnb.getData()
-    print(gnb.teams)
-    print(gnb.odds)""" # partially works
-
-    """dkb = DraftkingsBot('https://sportsbook.draftkings.com/leagues/football/88670561')
-    dkb.navigate()
-    dkb.getData()
-    print(dkb.teams)
-    print(dkb.odds)"""
+    print(fbb.odds)"""
 
 
 

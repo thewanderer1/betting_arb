@@ -3,6 +3,9 @@ from Game import Game
 from bs4 import BeautifulSoup
 import random
 import time
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
+
 
 class ScraperBot(object):
 
@@ -34,6 +37,8 @@ class ScraperBot(object):
         ran = random.uniform(0.01,2)
         time.sleep(2)
         time.sleep(ran)
+        self.scrollToBottom()
+
 
     #override this method always
     def scrapePage(self):
@@ -54,3 +59,23 @@ class ScraperBot(object):
             odds2 = self.odds[2 * i + 1]
             g = Game(team1, odds1, team2, odds2)
             self.games[g.name] = g
+
+    def scrollToBottom(self):
+        # first, we need to load all of the NFL teams on this page
+        scrollpos = 250
+
+        total_height = self.driver.execute_script("return document.body.scrollHeight")
+
+        while scrollpos < total_height:
+            string_to_write = "window.scrollTo(0,"
+            string_to_write += str(scrollpos)
+            string_to_write += ")"
+            self.driver.execute_script(string_to_write)
+            time.sleep(.25)
+            scrollpos += 250
+            total_height = (self.driver).execute_script("return document.body.scrollHeight")
+
+        string_to_write = "window.scrollTo(0, "
+        string_to_write += str(total_height)
+        string_to_write += ");"
+        self.driver.execute_script(string_to_write)

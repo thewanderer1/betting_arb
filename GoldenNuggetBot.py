@@ -3,6 +3,7 @@ from scraperBot import ScraperBot
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 import time
 
 class GoldenNuggetBot(ScraperBot):
@@ -16,6 +17,7 @@ class GoldenNuggetBot(ScraperBot):
         https://mi-casino.goldennuggetcasino.com/sports/sport/3/football/matches?preselectedFilters=13 - NFL
         https://mi-casino.goldennuggetcasino.com/sports/sport/3/football/matches?preselectedFilters=539 - NCAAF
         https://mi-casino.goldennuggetcasino.com/sports/sport/5/basketball/matches?preselectedFilters=all - All Basketball
+        https://mi-casino.goldennuggetcasino.com/sports/sport/5/basketball/matches?preselectedFilters=543 - NBA
         """
         time.sleep(2)
         self.teams.clear()
@@ -35,5 +37,6 @@ class GoldenNuggetBot(ScraperBot):
 
     def navigate(self):
         super(GoldenNuggetBot, self).navigate()
-        a = WebDriverWait(self.driver,10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "a[class='content-loader__load-more-link']"))).click()
+        element = self.driver.find_element_by_css_selector("a[class='content-loader__load-more-link']")
+        ActionChains(self.driver).move_to_element(element).click().perform()
 

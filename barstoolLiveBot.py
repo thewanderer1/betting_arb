@@ -8,6 +8,14 @@ class BarstoolLiveBot(ScraperBot):
         super().__init__(name, url)
 
     def scrapePage(self):
+
+        """
+
+                tested for the following URLS as of 11/26/21
+                 - NFL
+                https://www.barstoolsportsbook.com/sports/basketball/nba?list=live - NBA
+
+        """
         barstool_soup = BeautifulSoup(self.driver.page_source, 'lxml')
         events = barstool_soup.find_all('div', class_='container wrap event-row match-row')
         self.teams.clear()

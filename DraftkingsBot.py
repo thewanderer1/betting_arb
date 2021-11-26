@@ -7,6 +7,13 @@ class DraftkingsBot(ScraperBot):
         super().__init__(name, url)
 
     def scrapePage(self):
+        """
+
+                tested for the following URLS as of 11/26/21
+                https://sportsbook.draftkings.com/leagues/football/88670561 - NFL
+                https://sportsbook.draftkings.com/leagues/basketball/88670846 - NBA
+
+        """
         dksoup = BeautifulSoup(self.driver.page_source, 'lxml')
         events = dksoup.find_all('tbody', class_='sportsbook-table__body')
         self.teams.clear()
