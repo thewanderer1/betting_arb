@@ -54,10 +54,10 @@ class ArbitrageBot(object):
                 negbook = name2
             if game2.odds1 > -(game1.odds2):
                 pos = game2.odds1
-                posteam = game2.team2
+                posteam = game2.team1
                 posbook = name2
                 neg = -game1.odds2
-                negteam = game1.team1
+                negteam = game1.team2
                 negbook = name1
         ratio = (pos + 100) * neg / ((neg + 100) * 100)
 
