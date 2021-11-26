@@ -20,29 +20,6 @@ class ArbitrageBot(object):
         self.mastergamelist = []
         self.arbitrage_opportunities =[]
 
-    def calculateBetRatio(self, game1, game2):
-        """
-        calculate the betting ratio to maximize guaranteed profit
-        """
-        pos = 0
-        neg = 0
-        if game1.odds1 < 0 and game1.odds2 > 0:
-            if game1.odds2 > -(game2.odds1):
-                pos = game1.odds2
-                neg = game2.odds1
-            if game2.odds2 > -(game1.odds1):
-                pos = game2.odds2
-                neg = game1.odds1
-        if game1.odds1 > 0 and game1.odds2 < 0:
-            if game1.odds1 > -(game2.odds2):
-                pos = game1.odds1
-                neg = game2.odds2
-            if game2.odds1 > -(game1.odds2):
-                pos = game2.odds1
-                neg = game1.odds2
-        ratio = (pos + 100) * neg / ((neg + 100) * 100)
-        return ratio
-
     def post_to_twitter(self,name1, game1, name2, game2):
 
         # First calculate the optimal betting ratio and which book/teams to bet on
@@ -57,14 +34,14 @@ class ArbitrageBot(object):
                 pos = game1.odds2
                 posteam = game1.team2
                 posbook = name1
-                neg = game2.odds1
+                neg = -game2.odds1
                 negteam = game2.team1
                 negbook = name2
             if game2.odds2 > -(game1.odds1):
                 pos = game2.odds2
                 posteam = game2.team2
                 posbook = name2
-                neg = game1.odds1
+                neg = -game1.odds1
                 negteam = game1.team1
                 negbook = name1
         if game1.odds1 > 0 and game1.odds2 < 0:
@@ -72,14 +49,14 @@ class ArbitrageBot(object):
                 pos = game1.odds1
                 posteam = game1.team1
                 posbook = name1
-                neg = game2.odds2
+                neg = -game2.odds2
                 negteam = game2.team2
                 negbook = name2
             if game2.odds1 > -(game1.odds2):
                 pos = game2.odds2
                 posteam = game2.team2
                 posbook = name2
-                neg = game1.odds1
+                neg = -game1.odds1
                 negteam = game1.team1
                 negbook = name1
         ratio = (pos + 100) * neg / ((neg + 100) * 100)
