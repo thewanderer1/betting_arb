@@ -21,8 +21,31 @@ class WilliamHillBot(ScraperBot):
         super().__init__(url)
 
     def getData(self):
+
+        #first, we need to load all of the NFL teams on this page
+        scrollpos = 250
+
+        total_height = self.driver.execute_script("return document.body.scrollHeight")
+
+        while scrollpos < total_height:
+            string_to_write = "window.scrollTo(0, "
+            string_to_write += str(scrollpos)
+            string_to_write += ");"
+            self.driver.execute_script(string_to_write)
+            time.sleep(.25)
+            scrollpos += 250
+            total_height = self.driver.execute_script("return document.body.scrollHeight")
+
+        string_to_write = "window.scrollTo(0, "
+        string_to_write += str(total_height)
+        string_to_write += ");"
+        self.driver.execute_script(string_to_write)
+
+
+
         whsoup = BeautifulSoup(self.driver.page_source, 'lxml')
-        events = whsoup.find_all('div', class_='eventList')
+        nfl_teams_html = whsoup.find('div',class_='Expander has--toggle competitionExpander') #there are two of these, one for NFL and one for NCAA - NFL is always first
+        events = nfl_teams_html.find_all('div', class_='eventList')
         self.teams.clear()
         self.odds.clear()
 

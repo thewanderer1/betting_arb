@@ -6,8 +6,7 @@ from barstoolLiveBot import BarstoolLiveBot
 from fanduelLiveBot import FanduelLiveBot
 from DraftkingsBot import DraftkingsBot
 from FoxbetBot import FoxbetBot
-from GoldenNuggetBot import GoldenNuggetBot
-
+from WilliamHillBot import WilliamHillBot
 
 class ArbitrageBot(object):
     """docstring for ArbitrageBot"""
