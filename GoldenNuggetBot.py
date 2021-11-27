@@ -20,8 +20,11 @@ class GoldenNuggetBot(ScraperBot):
         https://mi-casino.goldennuggetcasino.com/sports/sport/5/basketball/matches?preselectedFilters=all - All Basketball
         https://mi-casino.goldennuggetcasino.com/sports/sport/5/basketball/matches?preselectedFilters=543 - NBA
         """
-        time.sleep(2)
-
+        # try:
+        #     element = self.driver.find_element_by_css_selector("a[class='content-loader__load-more-link']")
+        #     ActionChains(self.driver).move_to_element(element).click().perform()
+        # finally:
+        #     a = 0
         # load the html
         soup = BeautifulSoup(self.driver.page_source, 'lxml')
 
@@ -52,6 +55,9 @@ class GoldenNuggetBot(ScraperBot):
             # get the moneyline odds as well
             # This is the column of odds so it has two odds
             moneyline = event.find('div', class_='market__body market__body--2-col market__body--HH')
+
+            if not moneyline:
+                continue
 
             # create something to store the odds
             # default value is a placeholder of zero
