@@ -33,8 +33,6 @@ class ScraperBot(object):
         # scrape the webpage to gather data
         self.scrapePage()
 
-        # data is gathered in arrays of teams and odds, convert these to a dictionary of games
-        self.convertToDict()
 
     def clear(self):
         self.teams.clear()
@@ -60,23 +58,6 @@ class ScraperBot(object):
         """
         # always the first line
         soup = BeautifulSoup(self.driver.page_source, 'lxml')
-
-    def convertToDict(self):
-        """
-        Converts the two arrays of teams and odds into a dictionary
-        """
-        numgames = len(self.teams)
-        # Go through and gather pairs of adjacent teams and corresponding odds
-        # numgames should be even (each game has 2 teams)
-        for i in range(numgames//2):
-            team1 = self.teams[2 * i].split()[-1]
-            team2 = self.teams[2 * i + 1].split()[-1]
-            odds1 = self.odds[2 * i]
-            odds2 = self.odds[2 * i + 1]
-            g = Game(team1, odds1, team2, odds2)
-
-            # store the games by their unique name
-            self.games[g.name] = g
 
     def scrollToBottom(self):
         # first, we need to load all of the NFL teams on this page
