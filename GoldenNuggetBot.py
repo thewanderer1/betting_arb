@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 import time
+from Game import Game
 
 class GoldenNuggetBot(ScraperBot):
 
@@ -20,34 +21,60 @@ class GoldenNuggetBot(ScraperBot):
         https://mi-casino.goldennuggetcasino.com/sports/sport/5/basketball/matches?preselectedFilters=543 - NBA
         """
         time.sleep(2)
-        self.teams.clear()
-        self.odds.clear()
+
+        # load the html
+        soup = BeautifulSoup(self.driver.page_source, 'lxml')
 
         # delete list of promos in right panel to avoid any extra data or games or anything
-        soup = BeautifulSoup(self.driver.page_source, 'lxml')
         rightpanel = soup.find('div', class_='right-panels-group my-bets--floating')
         rightpanel.decompose()
 
+        # get a list of all the games
+        # note that some of the elements in this list do not correspond to games, but that shouldn't be a problem
         events = soup.find_all('li')
+
+        # loop through all the games and make a Game for each one
         for event in events:
-            hometeamslist = event.find_all('div', class_='event-card__body__name__home')
-            awayteamslist = event.find_all('div', class_='event-card__body__name__away')
-            moneylinelist = event.find_all('div', class_='market__body market__body--2-col market__body--HH')
-            for i in range(len(hometeamslist)):
-                self.teams.append(hometeamslist[i].get_text().strip())
-                self.teams.append(awayteamslist[i].get_text().strip())
+            # there is one hometeam and one away team per game
+            hometeam = event.find('div', class_='event-card__body__name__home')
+            awayteam = event.find('div', class_='event-card__body__name__away')
 
-            l1 = len(self.odds)
-            for m in moneylinelist:
-                for x in m.find_all('span', class_='button--outcome__price'):
-                    self.odds.append( int( x.get_text().strip() ) )
+            # if this event is not a game, continue
+            if not hometeam:
+                continue
 
-            l2 = len(self.odds)
-            for i in range(l1 + 2 * len(hometeamslist) - l2): #ensure that there are placeholders if the odds are missing
-                self.odds.append(0)
+            team1 = hometeam.get_text().strip()
+            # strip the team names to standardize them
+            team1 = self.getTeamName(team1)
+            team2 = awayteam.get_text().strip()
+            team2 = self.getTeamName(team2)
 
+            # get the moneyline odds as well
+            # This is the column of odds so it has two odds
+            moneyline = event.find('div', class_='market__body market__body--2-col market__body--HH')
+
+            # create something to store the odds
+            # default value is a placeholder of zero
+            odds = [0, 0]
+            counter = 0
+            # go through the column and get the individual odds
+            for x in moneyline.find_all('span', class_='button--outcome__price'):
+                odds[counter] =  int( x.get_text().strip() )
+                counter+=1
+
+            # create a Game object corresponding to this pair of rows
+            game = Game(team1, odds[0], team2, odds[1])
+            # put the game in the dictionary
+            # if the same game is already in there (an earlier version), ignore the later game
+            if game.name not in self.games:
+                self.games[game.name] = game
+
+
+    # overload the navigate method
+    # an extra click is needed for this website
     def navigate(self):
         super(GoldenNuggetBot, self).navigate()
+        # find the "See More button and click it
         element = self.driver.find_element_by_css_selector("a[class='content-loader__load-more-link']")
         ActionChains(self.driver).move_to_element(element).click().perform()
 

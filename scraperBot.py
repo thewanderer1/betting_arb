@@ -10,20 +10,30 @@ from selenium.webdriver.common.keys import Keys
 class ScraperBot(object):
 
     def __init__(self, name, url): #the url that corresponds to the sport nba/nfl/...
+        # initialize all the variables
         self.teams = []
         self.odds = []
         self.games = {}
         self.name = name
         self.url = url
+
+        # start Chrome
         self.driver = Chrome()
+
+        # set a regular window size
         self.driver.set_window_size(1280, 800)
 
     def getData(self):
         """
         This is the main method of the bot
         """
+        # clear all the existing team and odds data just in case
         self.clear()
+
+        # scrape the webpage to gather data
         self.scrapePage()
+
+        # data is gathered in arrays of teams and odds, convert these to a dictionary of games
         self.convertToDict()
 
     def clear(self):
@@ -34,9 +44,12 @@ class ScraperBot(object):
     def navigate(self):
         self.driver.get(self.url)
 
+        # sleep to make the behavior random and avoid bot detection
         ran = random.uniform(0.01,2)
         time.sleep(2)
         time.sleep(ran)
+
+        # scroll to bottom to load all html elements and games
         self.scrollToBottom()
 
 
@@ -45,6 +58,7 @@ class ScraperBot(object):
         """
         This method scrapes for teams and odds
         """
+        # always the first line
         soup = BeautifulSoup(self.driver.page_source, 'lxml')
 
     def convertToDict(self):
@@ -52,12 +66,16 @@ class ScraperBot(object):
         Converts the two arrays of teams and odds into a dictionary
         """
         numgames = len(self.teams)
-        for i in range(numgames//2): # games should be even
+        # Go through and gather pairs of adjacent teams and corresponding odds
+        # numgames should be even (each game has 2 teams)
+        for i in range(numgames//2):
             team1 = self.teams[2 * i].split()[-1]
             team2 = self.teams[2 * i + 1].split()[-1]
             odds1 = self.odds[2 * i]
             odds2 = self.odds[2 * i + 1]
             g = Game(team1, odds1, team2, odds2)
+
+            # store the games by their unique name
             self.games[g.name] = g
 
     def scrollToBottom(self):
@@ -79,3 +97,10 @@ class ScraperBot(object):
         string_to_write += str(total_height)
         string_to_write += ");"
         self.driver.execute_script(string_to_write)
+
+    def getTeamName(self, teamString):
+        """
+        The purpose of this method is to strip the team names from the html down to a common name, the unique name of the team
+        """
+        # just get the last word of the team name, it should be the same across sportsbooks.
+        return teamString.split()[-1]

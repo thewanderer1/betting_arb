@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from scraperBot import ScraperBot
+from Game import Game
 
 class BarstoolUpcomingBot(ScraperBot):
 
@@ -14,29 +15,49 @@ class BarstoolUpcomingBot(ScraperBot):
                         https://www.barstoolsportsbook.com/sports/basketball/nba - NBA
 
         """
+        # load the html
         barstool_soup = BeautifulSoup(self.driver.page_source, 'lxml')
+
+        # get a list of all the games
         events = barstool_soup.find_all('div', class_='container wrap event-row match-row')
-        self.teams.clear()
-        self.odds.clear()
 
+        # loop through the games and create a Game for each
         for e in events:
-            barstool_teams_selector = e.find_all('p', class_='body1 participant upcoming')
-            barstool_odds_selector = e.find_all('label', class_='outcome-card label event-chip-wrapper')
-            tsl = 0
-            osl = 0
-            for t in barstool_teams_selector:
-                self.teams.append(t.get_text().strip())
-                tsl+=1
+            # get a list of all the teams
+            # this should have length 2
+            teamlist = e.find_all('p', class_='body1 participant upcoming')
 
-            for p in barstool_odds_selector:
+            team1 = teamlist[0].get_text().strip()
+            # strip the team names to standardize them
+            team1 = self.getTeamName(team1)
+            team2 = teamlist[1].get_text().strip()
+            team2 = self.getTeamName(team2)
+
+            # create something to store the odds
+            # default value is a placeholder of zero
+            odds = [0,0]
+
+            # get a list of all the odds
+            # should have two values unless odds are missing
+            oddslist = e.find_all('label', class_='outcome-card label event-chip-wrapper')
+
+            # keep a counter of which odds value we are storing (1 or 2)
+            counter = 0
+            for p in oddslist:
                     s = p["aria-label"]
                     if(s.find("moneyline") >= 0):
-                        osl+=1
                         x = s.find("Odds:", 0, len(s))
                         s1 = s[x:][6:]
                         try:
-                            self.odds.append(int(s1))
+                            odds[counter] = int(s1)
                         except ValueError:
-                            self.odds.append(0) #placeholder for an odds value that isn't there yet(the value might be quickly changing or something else)
-            for i in range(0,tsl - osl):
-                self.odds.append(0) #placeholder for an odds value that isn't there yet(the value might be quickly changing or something else)
+                            odds[counter] = 0
+                        counter +=1
+
+
+            # create a Game object corresponding to this pair of rows
+            game = Game(team1, odds[0], team2, odds[1])
+            # put the game in the dictionary
+            # if the same game is already in there (an earlier version), ignore the later game
+            if game.name not in self.games:
+                self.games[game.name] = game

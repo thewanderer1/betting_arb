@@ -62,7 +62,7 @@ class ArbitrageBot(object):
         ratio = (pos + 100) * neg / ((neg + 100) * 100)
 
 
-        post = "Arbitrage found \n" + name1 + ": " + str(game1) + "\n" + name2 + ": " + str(game2) + "\n" + "For every dollar bet on " + posbook + ": " + posteam + " bet " + str(ratio) + " dollars on " + negbook + ": " + negteam + "\n" + "The guaranteed profit per dollar is " + str(pos/100 - ratio)
+        post = "Arbitrage found \n" + name1 + ": " + str(game1) + "\n" + name2 + ": " + str(game2) + "\n\n" + "For every dollar bet on " + posbook + ": " + posteam + " bet " + str(ratio) + " dollars on " + negbook + ": " + negteam + "\n\n" + "The guaranteed profit per dollar is " + str(pos/100 - ratio)
         try:
             self.status = self.api.PostUpdate(post)
         finally:
@@ -85,6 +85,10 @@ class ArbitrageBot(object):
             l = len(gamelist)
             for i in range(l):
                 for j in range(i + 1, l):
+                    # check that they aren't the same sportsbook so that we don't accidentally have crossover between ncaa teams who are the same
+                    # check the first word in the book name
+                    if gamelist[i].name.split()[0] == gamelist[j].name.split()[0]:
+                        continue
                     if (gamelist[i].games[gameName].checkForArbitrage(gamelist[j].games[gameName])):
                         self.post_to_twitter(gamelist[i].name, gamelist[i].games[gameName], gamelist[j].name, gamelist[j].games[gameName])
 
@@ -98,13 +102,17 @@ class ArbitrageBot(object):
             time.sleep(.9)
             for bot in self.scraperlist:
                 bot.getData()
-                #print(bot.games)
+                # print(bot.name)
+                # for game in bot.games:
+                #     print(bot.games[game])
+                # print(" ")
             self.checkForArbitrage()
 
 
 
 def main():
 
+    # create the different bots for the different sportsbooks and sports
     NBAbots = []
     NBAbots.append(FoxbetBot("Foxbet NBA", 'https://mi.foxbet.com/#/basketball/competitions/8936422'))
     NBAbots.append(BarstoolUpcomingBot("Barstool Upcoming NBA", 'https://www.barstoolsportsbook.com/sports/basketball/nba'))
@@ -119,8 +127,9 @@ def main():
     NFLbots.append( BarstoolLiveBot("Barstool Live NFL", 'https://www.barstoolsportsbook.com/sports/american_football/nfl?list=live'))
     NFLbots.append(GoldenNuggetBot("GoldenNugget NFL",'https://mi-casino.goldennuggetcasino.com/sports/sport/3/football/matches?preselectedFilters=13'))
     NFLbots.append(DraftkingsBot("DraftKings NFL", 'https://sportsbook.draftkings.com/leagues/football/88670561'))
-    #NFLbots.append(WilliamHillBot("William Hill NFL", 'https://www.williamhill.com/us/mi/bet/basketball'))
+    NFLbots.append(WilliamHillBot("William Hill NFL", 'https://www.williamhill.com/us/mi/bet/basketball'))
 
+    # run the arbitrage bot
     a = ArbitrageBot(NBAbots + NFLbots)
     a.run()
 
