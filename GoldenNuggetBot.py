@@ -28,10 +28,6 @@ class GoldenNuggetBot(ScraperBot):
         # load the html
         soup = BeautifulSoup(self.driver.page_source, 'lxml')
 
-        # delete list of promos in right panel to avoid any extra data or games or anything
-        rightpanel = soup.find('div', class_='right-panels-group my-bets--floating')
-        rightpanel.decompose()
-
         # get a list of all the games
         # note that some of the elements in this list do not correspond to games, but that shouldn't be a problem
         events = soup.find_all('li')
@@ -80,7 +76,11 @@ class GoldenNuggetBot(ScraperBot):
     # an extra click is needed for this website
     def navigate(self):
         super(GoldenNuggetBot, self).navigate()
+
         # find the "See More button and click it
-        element = self.driver.find_element_by_css_selector("a[class='content-loader__load-more-link']")
-        ActionChains(self.driver).move_to_element(element).click().perform()
+        try:
+            element =  self.driver.find_element_by_xpath("//div[@class='main-content__content-canvas']//a[@class='content-loader__load-more-link']")
+            ActionChains(self.driver).move_to_element(element).click().perform()
+        except:
+            print(" No see more button on " + self.name)
 

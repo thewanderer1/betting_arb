@@ -27,7 +27,8 @@ class BarstoolLiveBot(ScraperBot):
         for e in events:
             # get a list of all the teams
             # this should have length 2
-            teamlist = e.find_all('p', class_='body1 participant upcoming')
+            teamlist = e.find_all('p', class_='body1 participant')
+
 
             team1 = teamlist[0].get_text().strip()
             # strip the team names to standardize them
