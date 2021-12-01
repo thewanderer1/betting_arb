@@ -51,7 +51,10 @@ class WilliamHillBot(ScraperBot):
                     for p in oddslist:
                         sb = p.find_previous_siblings()
                         if not sb:
-                            odds[counter] = int(p.get_text().strip())
+                            try:
+                                odds[counter] = int(p.get_text().strip())
+                            except:
+                                odds[counter]=0
                             counter +=1
 
                 # create a Game object corresponding to this pair of rows

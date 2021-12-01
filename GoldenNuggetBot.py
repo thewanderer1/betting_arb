@@ -52,17 +52,15 @@ class GoldenNuggetBot(ScraperBot):
             # This is the column of odds so it has two odds
             moneyline = event.find('div', class_='market__body market__body--2-col market__body--HH')
 
-            if not moneyline:
-                continue
-
             # create something to store the odds
             # default value is a placeholder of zero
             odds = [0, 0]
             counter = 0
             # go through the column and get the individual odds
-            for x in moneyline.find_all('span', class_='button--outcome__price'):
-                odds[counter] =  int( x.get_text().strip() )
-                counter+=1
+            if moneyline:
+                for x in moneyline.find_all('span', class_='button--outcome__price'):
+                    odds[counter] =  int( x.get_text().strip() )
+                    counter+=1
 
             # create a Game object corresponding to this pair of rows
             game = Game(team1, odds[0], team2, odds[1])
@@ -76,11 +74,17 @@ class GoldenNuggetBot(ScraperBot):
     # an extra click is needed for this website
     def navigate(self):
         super(GoldenNuggetBot, self).navigate()
+        # if there is an ad, close it otherwise the See more button is not clickable
+        try:
+            adelement = self.driver.find_element_by_xpath("//div[@id='closeButton']")
+            ActionChains(self.driver).move_to_element(adelement).click(adelement).perform()
+        except:
+            print("")
 
         # find the "See More button and click it
         try:
-            element =  self.driver.find_element_by_xpath("//div[@class='main-content__content-canvas']//a[@class='content-loader__load-more-link']")
-            ActionChains(self.driver).move_to_element(element).click().perform()
+            element =  self.driver.find_element_by_xpath("//article[@class='content-canvas-content']//a[@class='content-loader__load-more-link']")
+            ActionChains(self.driver).move_to_element(element).click(element).perform()
         except:
             print(" No see more button on " + self.name)
 

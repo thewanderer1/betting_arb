@@ -27,6 +27,9 @@ class BarstoolUpcomingBot(ScraperBot):
             # this should have length 2
             teamlist = e.find_all('p', class_='body1 participant upcoming')
 
+            if not teamlist:
+                continue
+
             team1 = teamlist[0].get_text().strip()
             # strip the team names to standardize them
             team1 = self.getTeamName(team1)
