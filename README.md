@@ -35,3 +35,4 @@ bet rounded to nearest 10 (or rounder if possible)
 
 add delay (ms?) so the site doesn't detect youre automated
 
+Not Yet Working
